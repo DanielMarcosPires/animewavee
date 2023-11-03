@@ -1,0 +1,6 @@
+.BarraPesquisa{
+  width: 60%;
+  border-radius: 20px;
+  display: flex;
+  margin: 0 auto;
+}

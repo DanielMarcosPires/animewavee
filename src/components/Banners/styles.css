@@ -1,0 +1,13 @@
+.swiper-slide {
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+}
+.mySwiper{
+  background: #000000;
+}
+
+.swiper-slide img {
+  max-width: 60%;
+  max-height: 100%;
+}
