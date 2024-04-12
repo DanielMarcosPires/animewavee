@@ -3,3 +3,6 @@
   margin-top: 35px;
   background-color: none;
 }
+.swiper-button-prev, .swiper-button-next{
+  visibility: hidden;
+}

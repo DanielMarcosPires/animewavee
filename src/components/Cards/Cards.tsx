@@ -1,94 +1,100 @@
 /* eslint-disable @next/next/no-img-element */
-"use client";
-// Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
+import "swiper/css/navigation";
 
 import "./styles.css";
 
 // import required modules
-import { Autoplay } from "swiper/modules";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "./css/style.css";
-export default function Cards() {
+import { Anime } from "@/api/Anime";
+import { Suspense } from "react";
+
+async function Catalog() {
+  const catalog = new Anime();
+  const anime: any = await catalog.getAPI(
+    "https://kitsu.io/api/edge/anime?page[limit]=20&page[offset]=10",
+  );
+
+  const obj = anime.data;
+  return obj;
+}
+function convertDate(data: string) {
+  const date = new Date(data);
+  let dia = `${date.getDate()}`;
+  let mes = `${date.getMonth() + 1}`;
+  const ano = date.getFullYear();
+  if (Number(dia) < 10) {
+    dia = `0${dia}`;
+  }
+  if (Number(mes) < 10) {
+    mes = `0${mes}`;
+  }
+  return `${dia}/${mes}/${ano}`;
+}
+export default async function Cards() {
+  const render = await Catalog();
+
+  console.log(render);
   return (
     <>
+      <section className="flex items-center justify-center bg-violet-800 py-5">
+        <div className="w-[95%]">
+          <h2 className="text-2xl font-bold">Destaques :</h2>
+        </div>
+      </section>
       <Swiper
-        slidesPerView={3}
+        slidesPerView={1}
         autoplay={{
           delay: 5000,
         }}
+        pagination={true}
         loop={true}
         centeredSlides={true}
-        modules={[Autoplay]}
+        modules={[Autoplay, Pagination, Navigation]}
         className="Cards sombra bg-[#7e22ce] py-4"
       >
-        <SwiperSlide className="m-0">
-          <img
-            src="/img/one piece.jpeg"
-            alt="banner anime one piece"
-            className="no-background border border-white"
-            width={200}
-          />
-        </SwiperSlide>
-        <SwiperSlide className="m-0">
-          <img
-            src="/img/chaysaw man.jpeg"
-            alt="banner anime  chaysaw man"
-            className="border border-white"
-            width={200}
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img
-            src="/img/hunterXhunter.jpeg"
-            alt="banner anime hunterXhunter"
-            className="border border-white"
-            width={200}
-          />
-        </SwiperSlide>
-        <SwiperSlide className="m-0">
-          <img
-            src="/img/demon slayer.jpeg"
-            alt=" Banner- Demon slayer"
-            className="border border-white"
-            width={200}
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img
-            src="/img/jujutsu kaisen.jpeg"
-            alt="Banner- jujutsu kaisen"
-            className="border border-white"
-            width={200}
-          />
-        </SwiperSlide>
-        <SwiperSlide className="m-0">
-          <img
-            src="/img/Lycoris.jpeg"
-            alt="Licoris"
-            className="border border-white"
-            width={200}
-          />
-        </SwiperSlide>
-        <SwiperSlide className="m-0">
-          <img
-            src="/img/okami .png"
-            alt="okami"
-            className="border border-white"
-            width={200}
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img
-            src="/img/naruto.jpeg"
-            alt="naruto"
-            className="border border-white"
-            width={200}
-          />
-        </SwiperSlide>
+        <Suspense unstable_expectedLoadTime={1000} fallback={<p>Loading...</p>}>
+          {render.map((item: any) => (
+            <SwiperSlide key={item.attributes.titles.en as string}>
+              <div className="flex flex-wrap  justify-center">
+                <img
+                  className="max-h-96 w-[300px] object-cover"
+                  src={item.attributes.posterImage.large}
+                  alt=""
+                />
+                <section className="w-[400px]">
+                  <header className="w-full bg-black/70 p-2">
+                    <h3 className=" text-center text-2xl">
+                      {item.attributes.canonicalTitle}
+                    </h3>
+                    <div className="flex items-end justify-between">
+                      <div>
+                        <p>
+                          Lançamento:{" "}
+                          {convertDate(item.attributes.startDate as string)}
+                        </p>
+                        <p>
+                          Atualizado:{" "}
+                          {convertDate(item.attributes.endDate as string)}
+                        </p>
+                      </div>
+                      <span>{item.attributes.ageRatingGuide}</span>
+                    </div>
+                  </header>
+                  <div className="max-h-[288px] scroll-m-2 overflow-y-scroll bg-black/60">
+                    <h2 className="px-5 py-2 text-xl">Description:</h2>
+                    <p className="p-5">{item.attributes.synopsis}</p>
+                  </div>
+                </section>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Suspense>
       </Swiper>
     </>
   );
