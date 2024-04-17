@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import "./styles.css";
 import { Header } from ".";
 import Link from "next/link";
@@ -8,6 +8,19 @@ interface HeaderProps {
   Animes: Dispatch<SetStateAction<object>>;
 }
 export default function HeaderComplete({ Animes }: HeaderProps) {
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   const ref = useRef(0);
   console.log(ref.current);
   return (
@@ -18,7 +31,7 @@ export default function HeaderComplete({ Animes }: HeaderProps) {
             Anime Wave
           </Header.Logo>
           <Header.Navbar
-            widthWindow={(e) => (ref.current = e)}
+            widthWindow={(e: any) => (ref.current = e)}
             className="flex gap-4"
           >
             <Link className="w-full py-2 text-center md:border-none" href={"#"}>
@@ -32,15 +45,19 @@ export default function HeaderComplete({ Animes }: HeaderProps) {
             </Link>
           </Header.Navbar>
         </div>
-        <div className="flex w-full items-center justify-end px-5">
-          <nav className="flex items-center gap-4">
-            <Search />
-            <Crown className="rounded-full " stroke="yellow" fill="yellow" />
-            <div className="rounded-full border-2 p-1 hover:border-black hover:bg-white/25">
-              <User className=" hover:stroke-black" />
-            </div>
-          </nav>
-        </div>
+        {width > 768 ? (
+          <div className="flex w-full items-center justify-end px-5">
+            <nav className="flex items-center gap-4">
+              <Search />
+              <Crown className="rounded-full " stroke="yellow" fill="yellow" />
+              <div className="rounded-full border-2 p-1 hover:border-black hover:bg-white/25">
+                <User className=" hover:stroke-black" />
+              </div>
+            </nav>
+          </div>
+        ) : (
+          ""
+        )}
       </Header.Box>
     </>
   );

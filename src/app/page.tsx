@@ -2,6 +2,7 @@
 import { Banners } from "@/components/Banners/Banners";
 import Cards from "@/components/Cards/Cards";
 import Catalogo from "@/components/Catalogo/catalogo";
+import { Footer } from "@/components/Footer/Footer";
 import Header from "@/components/Header/HeaderComplete";
 
 import { useState } from "react";
@@ -17,6 +18,7 @@ export default function Home() {
       <Banners />
       <Cards />
       <Catalogo catalogoAnime={animes} />
+      <Footer />
     </>
   );
 }

@@ -1,9 +1,6 @@
 import axios from "axios";
 
 export class Anime {
-  private API = ``;
-  attributes: any;
-
   async getAPI(API: string) {
     try {
       console.log(API);
